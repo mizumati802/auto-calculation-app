@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
+  <title>計算結果</title>
+  <link rel="stylesheet" href="styles.css"> <!-- 外部CSSのリンク -->
+</head>
+
+<body>
+  <div id="resultsContainer">
+    <h2>記録一覧</h2>
+    <ul id="resultsList" style="list-style-type: none;"></ul> <!-- リストの点を消す -->
+  </div>
+
+  <!-- 稼働時間合計 -->
+  <div id="totalHoursContainer">
+    <h3>稼働合計: <span id="totalHours">0 時間 0 分</span></h3>
+  </div>
+
+  <!-- ノルマ表示 -->
+  <div id="targetContainer">
+    <h3>ノルマ: <span id="targetResult">0 時間 0 分</span></h3>
+  </div>
+
+  <!-- ローカルストレージをクリアするボタン -->
+  <button onclick="clearLocalStorage()">クリア</button>
+
+  <!-- 送信完了メッセージ -->
+  <div id="statusMessage" style="display:none; color:green; font-size: 16px; margin-top: 10px;">送信完了</div>
+  <br>
+  <br>
+  <br>
+  <div>
+    <a href="https://mizumati802.github.io/auto-calculation-app">戻る</a>
+  </div>
+  <!-- 戻るリンク -->
+
+  <script>
+    // ページ読み込み時にローカルストレージから結果を取得して表示
+    window.onload = function () {
+      const results = JSON.parse(localStorage.getItem('results')) || [];
+      const resultsList = document.getElementById('resultsList');
+      let totalHours = 0;
+      let totalMinutes = 0;
+
+      // 結果をリスト表示
+      results.forEach((result, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `結果${index + 1}: ${result.result} 円, 稼働時間: ${result.timeResult}`;
+        resultsList.appendChild(li);
+
+        // 時間と分を正しく抽出
+        const timeParts = result.timeResult.match(/(\d+)\s*時間\s*(\d+)\s*分/);
+        if (timeParts) {
+          const hours = parseInt(timeParts[1]);
+          const minutes = parseInt(timeParts[2]);
+          totalHours += hours;
+          totalMinutes += minutes;
+        }
+      });
+
+      // 合計時間を「時間」と「分」に変換
+      const totalTimeInHours = totalHours + Math.floor(totalMinutes / 60);
+      const remainingMinutes = totalMinutes % 60;
+      document.getElementById('totalHours').innerText = `${totalTimeInHours} 時間 ${remainingMinutes} 分`;
+
+      // ノルマ計算: 3時間から合計時間を引く
+      const targetTime = 3 * 60;  // 3時間 = 180分
+      const totalTimeInMinutes = totalTimeInHours * 60 + remainingMinutes;
+      const remainingTime = targetTime - totalTimeInMinutes;
+
+      const targetResult = document.getElementById('targetResult');
+      const targetTimeHours = Math.floor(remainingTime / 60);
+      const targetTimeMinutes = remainingTime % 60;
+
+      // ノルマが0時間の場合、分だけ表示
+      if (remainingTime < 0) {
+        targetResult.innerText = "終了";
+        targetResult.style.color = "red";  // 「終了」の文字を赤く表示
+      } else if (targetTimeHours === 0) {
+        // ノルマが0時間の場合、分のみ表示
+        targetResult.innerText = `${targetTimeMinutes} 分`;
+      } else {
+        // 通常のノルマ表示
+        targetResult.innerText = `${targetTimeHours} 時間 ${targetTimeMinutes} 分`;
+      }
+    };
+
+    // ローカルストレージをクリアする関数
+    function clearLocalStorage() {
+      localStorage.removeItem('results');
+      document.getElementById('statusMessage').style.display = 'block'; // 送信完了メッセージ表示
+      setTimeout(() => {
+        document.getElementById('statusMessage').style.display = 'none'; // 2秒後に非表示
+      }, 2000);
+      window.location.reload();  // ページを再読み込みして結果を更新
+    }
+  </script>
+</body>
+
+</html>

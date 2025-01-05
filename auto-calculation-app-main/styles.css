@@ -1,0 +1,50 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  margin: 50px;
+}
+
+input,
+select {
+  padding: 10px;
+  margin: 10px;
+  font-size: 24px;
+  /* 16px以上に設定 */
+}
+
+h1,
+label {
+  font-size: 12pt;
+}
+
+.result {
+  font-size: 24pt;
+  margin-top: 12px;
+}
+
+.time,
+.target {
+  font-size: 18pt;
+  margin-top: 12px;
+}
+
+div {
+  margin-bottom: 12px;
+  /* 入力間の余白を広めに設定 */
+}
+
+#targetResult {
+  color: black;
+}
+
+#targetResultNegative {
+  color: red;
+}
+
+.result-link {
+  display: block;
+  text-align: right;
+  margin-right: 20px;
+  /* 余白調整 */
+  font-size: 16px;
+}
