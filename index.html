@@ -30,15 +30,28 @@
       margin-top: 12px;
     }
 
+    .time,
+    .target {
+      font-size: 24pt;
+      margin-top: 12px;
+    }
+
     div {
       margin-bottom: 12px;
       /* 入力間の余白を広めに設定 */
+    }
+
+    #targetResult {
+      color: black;
+    }
+
+    #targetResultNegative {
+      color: red;
     }
   </style>
 </head>
 
 <body>
-  
 
   <!-- 仕入額2 (プルダウン) -->
   <div>
@@ -96,6 +109,16 @@
     結果: <span id="result">0</span> 円
   </div>
 
+  <!-- 時間換算 -->
+  <div class="time">
+    必要な作業時間: <span id="timeResult">0 時間 0 分</span>
+  </div>
+
+  <!-- ノルマ表示 -->
+  <div class="target">
+    ノルマ: <span id="targetResult">0 時間 0 分</span>
+  </div>
+
   <script>
     function calculate() {
       const num2 = parseFloat(document.getElementById('num2').value) || 0;
@@ -109,6 +132,39 @@
       const result = Math.ceil(num3 - reducedProfit - totalCostAfterDiscount - num2);  // 結果を計算
 
       document.getElementById('result').innerText = result;  // 計算結果の表示
+
+      // 時給単価1000円で換算して、必要な作業時間を計算
+      const hourlyRate = 1000;
+      const totalHours = result / hourlyRate;  // 結果を1000円で割って時間を計算
+      const hours = Math.floor(totalHours);  // 時間部分を切り捨て
+      const minutes = Math.round((totalHours - hours) * 60);  // 残りを分に換算
+
+      // 時間と分を表示
+      document.getElementById('timeResult').innerText = `${hours} 時間 ${minutes} 分`;
+
+      // 3時間から残り作業時間を引いたノルマを計算
+      const targetHours = 3;  // 3時間のノルマ
+      const targetTotalHours = targetHours - totalHours;  // ノルマ = 3時間 - 必要な作業時間
+      const targetTimeHours = Math.floor(targetTotalHours);  // 時間部分を切り捨て
+      const targetTimeMinutes = Math.round((targetTotalHours - targetTimeHours) * 60);  // 残りを分に換算
+
+      // ノルマが0時間なら分のみ表示、負の場合は終了
+      if (targetTotalHours < 0) {
+        document.getElementById('targetResult').innerText = "終了";
+        document.getElementById('targetResult').id = 'targetResultNegative';  // 負の場合は赤く表示
+      } else if (targetTimeHours === 0) {
+        // ノルマが0時間の場合、分のみ表示
+        document.getElementById('targetResult').innerText = `${targetTimeMinutes} 分`;
+      } else {
+        // 通常のノルマ表示
+        document.getElementById('targetResult').innerText = `${targetTimeHours} 時間 ${targetTimeMinutes} 分`;
+      }
+
+      // ノルマが終了なら、再度計算を行うとリセットされる
+      if (targetTotalHours < 0) {
+        document.getElementById('targetResult').innerText = "終了";
+        document.getElementById('targetResult').id = 'targetResultNegative';
+      }
     }
   </script>
 </body>
