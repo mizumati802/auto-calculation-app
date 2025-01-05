@@ -45,16 +45,38 @@ div {
   display: block;
   text-align: right;
   margin-right: 20px;
+  padding: 10px;
+  font-size: 20pt;
   /* 余白調整 */
-  font-size: 20px;
 }
 
 
-.local_button {
+
+.buck_link {
+  display: block;
+  text-align: right;
+  margin-right: 20px;
+  /* 余白調整 */
+  font-size: 28px;
+}
+
+
+.local_button{
   display: block;
   text-align: left;
   margin-right: 20px;
   padding: 10px;
-  font-size: 20pt;
+  font-size: 18pt;
+  /* 余白調整 */
+}
+
+
+
+.clear_button {
+  display: block;
+  text-align: left;
+  margin-right: 20px;
+  padding: 10px;
+  font-size: 18pt;
   /* 余白調整 */
 }
