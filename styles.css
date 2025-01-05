@@ -46,5 +46,15 @@ div {
   text-align: right;
   margin-right: 20px;
   /* 余白調整 */
-  font-size: 16px;
+  font-size: 20px;
+}
+
+
+.local_button {
+  display: block;
+  text-align: left;
+  margin-right: 20px;
+  padding: 10px;
+  font-size: 20pt;
+  /* 余白調整 */
 }
