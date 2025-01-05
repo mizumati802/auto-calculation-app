@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
+  <title>自動計算アプリ</title>
+  <link rel="stylesheet" href="styles.css"> <!-- 外部CSSのリンク -->
+  <script src="script.js" defer></script> <!-- 外部JSのリンク -->
+</head>
+
+<body>
+
+  <!-- 仕入額2 (プルダウン) -->
+  <div>
+    <label for="num4">仕入額:</label>
+    <select id="num4" onchange="calculate()">
+      <option value="0">0</option>
+      <option value="610">610</option>
+      <option value="830" selected>830</option> <!-- デフォルトを830に設定 -->
+      <option value="1050">1050</option>
+      <option value="1380">1380</option>
+      <option value="1600">1600</option>
+      <option value="2050">2050</option>
+      <option value="390">390</option>
+    </select>
+  </div>
+
+  <!-- 見込み利益 (プルダウン) -->
+  <div>
+    <label for="num3">
+      見込み:</label>
+    <select id="num3" onchange="calculate()">
+      <option value="3000">3000</option>
+      <option value="4000" selected>4000</option> <!-- デフォルトを4000に設定 -->
+      <option value="6000">6000</option>
+      <option value="8000">8000</option>
+      <option value="10000">10000</option>
+    </select>
+  </div>
+
+  <!-- パーセンテージ (プルダウン) -->
+  <div>
+    <label for="percentage">セール:</label>
+    <select id="percentage" onchange="calculate()">
+      <option value="0" selected>0</option> <!-- デフォルトを0に設定 -->
+      <option value="30">30%</option>
+      <option value="50">50%</option>
+      <option value="70">70%</option>
+      <option value="20">20%</option>
+    </select>
+  </div>
+
+  <!-- 送料 (プルダウン) -->
+  <div>
+    <label for="num2">送料:</label>
+    <select id="num2" onchange="calculate()">
+      <option value="0">0</option>
+      <option value="220" selected>220</option> <!-- デフォルトを220に設定 -->
+      <option value="450">450</option>
+      <option value="750">750</option>
+      <option value="1050">1050</option>
+    </select>
+  </div>
+
+  <!-- 状態・手間賃 (ドロップダウン) -->
+  <div>
+    <label for="status">状態・手間賃:</label>
+    <select id="status" onchange="calculate()">
+      <option value="0">なし</option>
+      <option value="300" selected>ポスト(-300)</option> <!-- デフォルトをポストに設定 -->
+      <option value="500">コンビニ(-500)</option>
+      <option value="1000">ピリング(-1000)</option>
+      <option value="1000">修理(-1000)</option>
+      <option value="1500">季節終わり(-1500)</option>
+    </select>
+  </div>
+
+  <!-- 計算結果表示 -->
+  <div class="result">
+    <span id="result">0</span> 円
+  </div>
+
+  <!-- 時間換算 -->
+  <div class="time">
+    稼働: <span id="timeResult">0 時間 0 分</span>
+  </div>
+  <br>
+  <!-- ローカルストレージに結果を送るボタン -->
+  <button id="saveToLocal" onclick="saveToLocalStorage()">ローカルへ送る</button>
+
+  <div id="statusMessage" style="display:none; color:green; font-size: 16px; margin-top: 10px;">送信完了</div>
+  <br>
+  <br>
+  <br>
+
+  <div>
+    <a href="http://127.0.0.1:5500/result.html">リザルトへ</a>
+  </div>
+
+</body>
+
+</html>
