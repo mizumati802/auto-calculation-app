@@ -11,17 +11,17 @@
 <body>
   <div id="resultsContainer">
     <h2>記録一覧</h2>
-    <ul id="resultsList" style="list-style-type: none;"></ul> <!-- リストの点を消す -->
+    <ul id="resultsList" style="list-style-type: none;font-size: 18pt;"></ul> <!-- リストの点を消す -->
   </div>
 
   <!-- 稼働時間合計 -->
   <div id="totalHoursContainer">
-    <h3>稼働合計: <span id="totalHours">0 時間 0 分</span></h3>
+    <h3>稼働合計: <span id="totalHours" style="font-size: 18pt;">0 時間 0 分</span></h3>
   </div>
 
   <!-- ノルマ表示 -->
   <div id="targetContainer">
-    <h3>ノルマ: <span id="targetResult">0 時間 0 分</span></h3>
+    <h3>ノルマ: <span id="targetResult" style="font-size: 18pt;">0 時間 0 分</span></h3>
   </div>
 
   <!-- ローカルストレージをクリアするボタン -->
@@ -44,12 +44,11 @@
       let totalMinutes = 0;
 
       // 結果をリスト表示
-      results.forEach((result, index) => {
+      results.forEach((result) => {
         const li = document.createElement('li');
-        li.innerHTML = `結果${index + 1}: ${result.result} 円, 稼働時間: ${result.timeResult}`;
+        li.innerHTML = `${result.result} 円, ${result.timeResult}`;
         resultsList.appendChild(li);
 
-        // 時間と分を正しく抽出
         const timeParts = result.timeResult.match(/(\d+)\s*時間\s*(\d+)\s*分/);
         if (timeParts) {
           const hours = parseInt(timeParts[1]);
@@ -58,6 +57,7 @@
           totalMinutes += minutes;
         }
       });
+
 
       // 合計時間を「時間」と「分」に変換
       const totalTimeInHours = totalHours + Math.floor(totalMinutes / 60);
