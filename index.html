@@ -16,7 +16,7 @@
     select {
       padding: 10px;
       margin: 10px;
-      font-size: 32px;
+      font-size: 28px;
       /* 16px以上に設定 */
     }
 
@@ -26,7 +26,7 @@
     }
 
     .result {
-      font-size: 32pt;
+      font-size: 28pt;
       margin-top: 12px;
     }
 
@@ -55,7 +55,7 @@
 
   <!-- 仕入額2 (プルダウン) -->
   <div>
-    <label for="num4">仕入額 (選択):</label>
+    <label for="num4">仕入額:</label>
     <select id="num4" onchange="calculate()">
       <option value="0">選択してください</option>
       <option value="610">610</option>
@@ -70,7 +70,7 @@
 
   <!-- 見込み利益 (プルダウン) -->
   <div>
-    <label for="num3">見込み利益 (選択):</label>
+    <label for="num3">見込み:</label>
     <select id="num3" onchange="calculate()">
       <option value="3000">3000</option>
       <option value="4000" selected>4000</option> <!-- デフォルトを4000に設定 -->
@@ -82,7 +82,7 @@
 
   <!-- パーセンテージ (プルダウン) -->
   <div>
-    <label for="percentage">セール価格 (%):</label>
+    <label for="percentage">セール:</label>
     <select id="percentage" onchange="calculate()">
       <option value="0" selected>0</option> <!-- デフォルトを0に設定 -->
       <option value="30">30%</option>
@@ -106,7 +106,7 @@
 
   <!-- 計算結果表示 -->
   <div class="result">
-    結果: <span id="result">0</span> 円
+    <span id="result">0</span> 円
   </div>
 
   <!-- 時間換算 -->
