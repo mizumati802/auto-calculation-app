@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
+  <title>自動計算アプリ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+
+    input,
+    select {
+      padding: 10px;
+      margin: 10px;
+      font-size: 64px;
+      /* 16px以上に設定 */
+    }
+
+    h1,
+    label {
+      font-size: 32pt;
+    }
+
+    .result {
+      font-size: 72pt;
+      margin-top: 20px;
+    }
+
+    div {
+      margin-bottom: 100px;
+      /* 入力間の余白を広めに設定 */
+    }
+  </style>
+</head>
+
+<body>
+  <h1>自動計算アプリ</h1>
+
+  <!-- 仕入額2 (プルダウン) -->
+  <div>
+    <label for="num4">仕入額 (選択):</label>
+    <select id="num4" onchange="calculate()">
+      <option value="0">選択してください</option>
+      <option value="610">610</option>
+      <option value="830">830</option>
+      <option value="1050">1050</option>
+      <option value="1380">1380</option>
+      <option value="1600">1600</option>
+      <option value="2050">2050</option>
+      <option value="390">390</option>
+    </select>
+  </div>
+
+  <!-- 見込み利益 (プルダウン) -->
+  <div>
+    <label for="num3">見込み利益 (選択):</label>
+    <select id="num3" onchange="calculate()">
+      <option value="3000">3000</option>
+      <option value="4000" selected>4000</option> <!-- デフォルトを4000に設定 -->
+      <option value="6000">6000</option>
+      <option value="8000">8000</option>
+      <option value="10000">10000</option>
+    </select>
+  </div>
+
+  <!-- パーセンテージ (プルダウン) -->
+  <div>
+    <label for="percentage">セール価格 (%):</label>
+    <select id="percentage" onchange="calculate()">
+      <option value="0" selected>0</option> <!-- デフォルトを0に設定 -->
+      <option value="30">30%</option>
+      <option value="50">50%</option>
+      <option value="70">70%</option>
+      <option value="20">20%</option>
+    </select>
+  </div>
+
+  <!-- 送料 (プルダウン) -->
+  <div>
+    <label for="num2">送料:</label>
+    <select id="num2" onchange="calculate()">
+      <option value="220" selected>220</option> <!-- デフォルトを220に設定 -->
+      <option value="0">選択してください</option>
+      <option value="450">450</option>
+      <option value="750">750</option>
+      <option value="1050">1050</option>
+    </select>
+  </div>
+
+  <!-- 計算結果表示 -->
+  <div class="result">
+    結果: <span id="result">0</span> 円
+  </div>
+
+  <script>
+    function calculate() {
+      const num2 = parseFloat(document.getElementById('num2').value) || 0;
+      const num4 = parseFloat(document.getElementById('num4').value) || 0;
+      const num3 = parseFloat(document.getElementById('num3').value) || 4000;  // デフォルト利益は4000
+      const percentage = parseFloat(document.getElementById('percentage').value) || 0;  // デフォルトを0に設定
+
+      // 計算式: num3 - 10% - (num4 - percentage) - num2
+      const reducedProfit = num3 * 0.1;  // num3の10%を引く
+      const totalCostAfterDiscount = num4 - (num4 * (percentage / 100));  // num4からパーセンテージ分を引く
+      const result = Math.ceil(num3 - reducedProfit - totalCostAfterDiscount - num2);  // 結果を計算
+
+      document.getElementById('result').innerText = result;  // 計算結果の表示
+    }
+  </script>
+</body>
+
+</html>
