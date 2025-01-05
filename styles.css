@@ -8,7 +8,7 @@ input,
 select {
   padding: 10px;
   margin: 10px;
-  font-size: 28px;
+  font-size: 24px;
   /* 16px以上に設定 */
 }
 
@@ -18,13 +18,13 @@ label {
 }
 
 .result {
-  font-size: 28pt;
+  font-size: 24pt;
   margin-top: 12px;
 }
 
 .time,
 .target {
-  font-size: 20pt;
+  font-size: 18pt;
   margin-top: 12px;
 }
 
@@ -39,4 +39,12 @@ div {
 
 #targetResultNegative {
   color: red;
+}
+
+.result-link {
+  display: block;
+  text-align: right;
+  margin-right: 20px;
+  /* 余白調整 */
+  font-size: 16px;
 }
