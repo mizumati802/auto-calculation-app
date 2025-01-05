@@ -32,7 +32,7 @@
 
     .time,
     .target {
-      font-size: 18pt;
+      font-size: 20pt;
       margin-top: 12px;
     }
 
@@ -111,7 +111,7 @@
 
   <!-- 時間換算 -->
   <div class="time">
-    必要な作業時間: <span id="timeResult">0 時間 0 分</span>
+    残りピック時間: <span id="timeResult">0 時間 0 分</span>
   </div>
 
   <!-- ノルマ表示 -->
@@ -160,10 +160,10 @@
         document.getElementById('targetResult').innerText = `${targetTimeHours} 時間 ${targetTimeMinutes} 分`;
       }
 
-      // ノルマが終了なら、再度計算を行うとリセットされる
+            // ノルマが終了の場合、リセットして再計算する
       if (targetTotalHours < 0) {
         document.getElementById('targetResult').innerText = "終了";
-        document.getElementById('targetResult').id = 'targetResultNegative';
+        document.getElementById('targetResult').id = 'targetResultNegative';  // 終了後は赤く表示
       }
     }
   </script>
