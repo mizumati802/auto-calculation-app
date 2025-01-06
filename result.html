@@ -14,6 +14,11 @@
     <ul id="resultsList" style="list-style-type: none;font-size: 18pt;"></ul> <!-- リストの点を消す -->
   </div>
 
+  <div id="totalCostContainer">
+    <h3>仕入れ合計: <span id="totalCost">0 円</span></h3>
+  </div>
+
+
   <!-- 稼働時間合計 -->
   <div id="totalHoursContainer">
     <h3>稼働合計: <span id="totalHours" style="font-size: 18pt;">0 時間 0 分</span></h3>
@@ -42,6 +47,7 @@
       const resultsList = document.getElementById('resultsList');
       let totalHours = 0;
       let totalMinutes = 0;
+      let totalCost = 0;
 
       // 結果をリスト表示
       results.forEach((result) => {
@@ -56,8 +62,13 @@
           totalHours += hours;
           totalMinutes += minutes;
         }
+
+        // 仕入れ金額を直接加算
+        totalCost += result.result;
       });
 
+      // 合計金額の表示
+      document.getElementById('totalCost').innerText = totalCost + " 円";
 
       // 合計時間を「時間」と「分」に変換
       const totalTimeInHours = totalHours + Math.floor(totalMinutes / 60);
@@ -73,15 +84,12 @@
       const targetTimeHours = Math.floor(remainingTime / 60);
       const targetTimeMinutes = remainingTime % 60;
 
-      // ノルマが0時間の場合、分だけ表示
       if (remainingTime < 0) {
         targetResult.innerText = "終了";
-        targetResult.style.color = "red";  // 「終了」の文字を赤く表示
+        targetResult.style.color = "red";
       } else if (targetTimeHours === 0) {
-        // ノルマが0時間の場合、分のみ表示
         targetResult.innerText = `${targetTimeMinutes} 分`;
       } else {
-        // 通常のノルマ表示
         targetResult.innerText = `${targetTimeHours} 時間 ${targetTimeMinutes} 分`;
       }
     };
@@ -89,13 +97,14 @@
     // ローカルストレージをクリアする関数
     function clearLocalStorage() {
       localStorage.removeItem('results');
-      document.getElementById('statusMessage').style.display = 'block'; // 送信完了メッセージ表示
+      document.getElementById('statusMessage').style.display = 'block';
       setTimeout(() => {
-        document.getElementById('statusMessage').style.display = 'none'; // 2秒後に非表示
+        document.getElementById('statusMessage').style.display = 'none';
       }, 2000);
-      window.location.reload();  // ページを再読み込みして結果を更新
+      window.location.reload();
     }
   </script>
+
 </body>
 
 </html>
