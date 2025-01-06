@@ -61,7 +61,7 @@ div {
 }
 
 
-.local_button{
+.local_button {
   display: block;
   text-align: left;
   margin-right: 20px;
@@ -71,6 +71,15 @@ div {
 }
 
 
+.control_Button {
+  display: block;
+  text-align: left;
+  margin-right: 20px;
+  padding: 10px;
+  font-size: 18pt;
+  /* 余白調整 */
+}
+
 
 .clear_button {
   display: block;
@@ -79,4 +88,8 @@ div {
   padding: 10px;
   font-size: 18pt;
   /* 余白調整 */
+}
+
+#timer {
+  font-size: 18pt;
 }
