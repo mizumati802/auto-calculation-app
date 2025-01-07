@@ -38,7 +38,7 @@
   <div class="button_Section">
     <div>
       <button id="controlButton" class="control_Button">仕入れ開始</button>
-      <button id="toggleTimerButton" class="control_Button">ストップ</button>
+      <button id="toggleTimerButton" class="control_Button">停止</button>
       <button onclick="clearLocalStorage()" class="clear_button">クリア</button> <!-- クリアを同じセクションに -->
     </div>
 
@@ -47,7 +47,7 @@
     </div>
   </div>
   <!-- 戻るリンク -->
-  
+
 
 
   <script>
@@ -188,7 +188,7 @@
         startTime = Date.now() - elapsedTime;
         localStorage.setItem('startTime', startTime);
         timerInterval = setInterval(updateTimer, 1000);
-        toggleButton.textContent = 'ストップ';
+        toggleButton.textContent = '停止';
         toggleButton.classList.add('running');  // 再開状態クラスを追加
         isRunning = true;
         localStorage.setItem('isRunning', 'true');
