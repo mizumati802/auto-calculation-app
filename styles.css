@@ -9,7 +9,7 @@ select {
   padding: 10px;
   margin: 10px;
   font-size: 24px;
-  /* 16px以上に設定 */
+  /* フォームのフォントサイズ */
 }
 
 h1,
@@ -41,55 +41,108 @@ div {
   color: red;
 }
 
+/* 記録リンクのスタイル */
 .result-link {
   display: block;
   text-align: right;
   margin-right: 20px;
   padding: 10px;
   font-size: 20pt;
-  /* 余白調整 */
 }
 
-
-
+/* 戻るリンク */
 .buck_link {
   display: block;
-  text-align: right;
-  margin-right: 20px;
-  /* 余白調整 */
   font-size: 28px;
 }
 
-
+/* ローカルボタン */
 .local_button {
-  display: block;
-  text-align: left;
   margin-right: 20px;
   padding: 10px;
   font-size: 18pt;
-  /* 余白調整 */
 }
 
-
+/* メイン操作ボタン */
 .control_Button {
   display: block;
-  text-align: left;
-  margin-right: 20px;
-  padding: 10px;
+  padding: 10px 20px;
   font-size: 18pt;
-  /* 余白調整 */
+  cursor: pointer;
+  background-color: #6e1b1b;
+  /* デフォルトでダークレッド */
+  color: white;
+  /* デフォルトで白文字 */
+  border: none;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* 仕入れ終了状態（ボタンが動作中）のスタイル */
+.control_Button.running {
+  background-color: #1b386e;
+  /* 動作中はネイビーブルー */
+  color: white;
 }
 
 
+/* クリアボタン */
 .clear_button {
+  margin-top: 60px;
   display: block;
-  text-align: left;
-  margin-right: 20px;
   padding: 10px;
   font-size: 18pt;
-  /* 余白調整 */
 }
 
+/* タイマー表示 */
 #timer {
   font-size: 18pt;
+}
+
+#toggleTimerButton {
+  display: block;
+  padding: 10px 20px;
+  font-size: 18pt;
+  cursor: pointer;
+  background-color: #49a57a;
+  /* 初期状態（再開）の色 */
+  color: white;
+  border: none;
+  text-align: center;
+  margin-top: 60px;
+}
+
+/* ストップ状態のスタイル */
+#toggleTimerButton.running {
+  background-color: #7a49a5;
+  /* ストップ状態の色 */
+}
+
+
+
+/* ボタンセクションのレイアウト */
+.button_Section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* 上揃えでボタンが並ぶ */
+  gap: 40px;
+  /* セクション間のスペース */
+}
+
+/* 左側のボタンセクション */
+.Section_1 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* ボタン間の余白 */
+}
+
+/* 右側のセクション（クリア・戻るリンク） */
+.Section_2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  /* ボタンとリンクの余白 */
 }

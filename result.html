@@ -32,16 +32,23 @@
 
   <!-- ローカルストレージをクリアするボタン -->
 
-  <button onclick="clearLocalStorage()" class="clear_button">クリア</button>
+
 
   <!-- 送信完了メッセージ -->
-  <div id="statusMessage" style="display:none; color:green; font-size: 16px; margin-top: 10px;">送信完了</div>
-  <div>
-    <a href="https://mizumati802.github.io/auto-calculation-app" class="buck_link">戻る</a>
+  <div class="button_Section">
+    <div>
+      <button id="controlButton" class="control_Button">仕入れ開始</button>
+      <button id="toggleTimerButton" class="control_Button">ストップ</button>
+      <button onclick="clearLocalStorage()" class="clear_button">クリア</button> <!-- クリアを同じセクションに -->
+    </div>
+
+    <div>
+      <a href="https://mizumati802.github.io/auto-calculation-app" class="buck_link">戻る</a>
+    </div>
   </div>
   <!-- 戻るリンク -->
-  <br>
-  <button id="controlButton" class="control_Button">仕入れ開始</button>
+  
+
 
   <script>
     // ページ読み込み時にローカルストレージから結果を取得して表示
@@ -109,71 +116,97 @@
 
     // 計測用script
 
-    let startTime = localStorage.getItem('startTime') ? parseInt(localStorage.getItem('startTime')) : 0;
-    let isRunning = localStorage.getItem('isRunning') === 'true';
+    let startTime = 0;
+    let elapsedTime = 0;
+    let isRunning = false;
     let timerInterval = null;
 
     const timerDisplay = document.getElementById('timer');
     const controlButton = document.getElementById('controlButton');
+    const toggleButton = document.getElementById('toggleTimerButton');
 
     function setButtonStyle() {
       controlButton.style.color = '#ffffff';
-      if (isRunning) {
-        controlButton.style.backgroundColor = '#1b386e';
-      } else {
-        controlButton.style.backgroundColor = '#6e1b1b';
-      }
+      controlButton.style.backgroundColor = isRunning ? '#1b386e' : '#6e1b1b';
     }
 
-    if (isRunning) {
+    // 初期設定
+    if (localStorage.getItem('isRunning') === 'true') {
+      startTime = parseInt(localStorage.getItem('startTime')) || 0;
+      elapsedTime = parseInt(localStorage.getItem('elapsedTime')) || 0;
+      isRunning = true;
+      startTime = Date.now() - elapsedTime;
       timerInterval = setInterval(updateTimer, 1000);
       controlButton.textContent = '仕入れ終了';
-      setButtonStyle();
     } else {
-      controlButton.style.backgroundColor = '#6e1b1b';
-      controlButton.style.color = '#ffffff';
+      controlButton.textContent = '仕入れ開始';
     }
 
+    // 仕入れ開始・終了ボタンの動作
     controlButton.addEventListener('click', () => {
       if (isRunning) {
+        // タイマーを停止しリセット
         clearInterval(timerInterval);
         localStorage.removeItem('startTime');
+        localStorage.removeItem('elapsedTime');
         localStorage.setItem('isRunning', 'false');
+        timerDisplay.textContent = '0:00:00';
         controlButton.textContent = '仕入れ開始';
+        toggleButton.textContent = 'ストップ';
+        controlButton.classList.remove('running');  // 動作中のクラスを外す
         isRunning = false;
       } else {
+        // 新しい計測開始
         startTime = Date.now();
+        elapsedTime = 0;
         localStorage.setItem('startTime', startTime);
+        localStorage.setItem('elapsedTime', elapsedTime);
         localStorage.setItem('isRunning', 'true');
         timerInterval = setInterval(updateTimer, 1000);
         controlButton.textContent = '仕入れ終了';
+        toggleButton.textContent = 'ストップ';
+        controlButton.classList.add('running');  // 動作中のクラスを追加
         isRunning = true;
       }
-      setButtonStyle();
     });
 
-    function updateTimer() {
-      const elapsedTime = Date.now() - startTime;
-      const seconds = Math.floor((elapsedTime / 1000) % 60);
-      const minutes = Math.floor(elapsedTime / 60000) % 60;
-      const hours = Math.floor(elapsedTime / 3600000);
 
-      timerDisplay.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    // ストップ・再開ボタンの処理
 
-      if (hours >= 3) {
-        timerDisplay.style.color = 'red';
-      } else if (hours >= 2) {
-        timerDisplay.style.color = 'orange';
-      } else if (hours >= 1) {
-        timerDisplay.style.color = 'green';
+    toggleButton.classList.add('running');
+
+    toggleButton.addEventListener('click', () => {
+      if (isRunning) {
+        clearInterval(timerInterval);
+        elapsedTime = Date.now() - startTime;
+        localStorage.setItem('elapsedTime', elapsedTime);
+        toggleButton.textContent = '再開';
+        toggleButton.classList.remove('running');  // 再開状態クラスを外す
+        isRunning = false;
+        localStorage.setItem('isRunning', 'false');
       } else {
-        timerDisplay.style.color = 'black';
+        startTime = Date.now() - elapsedTime;
+        localStorage.setItem('startTime', startTime);
+        timerInterval = setInterval(updateTimer, 1000);
+        toggleButton.textContent = 'ストップ';
+        toggleButton.classList.add('running');  // 再開状態クラスを追加
+        isRunning = true;
+        localStorage.setItem('isRunning', 'true');
       }
+    });
+
+
+    // タイマー更新関数
+    function updateTimer() {
+      const elapsed = Date.now() - startTime;
+      const seconds = Math.floor((elapsed / 1000) % 60);
+      const minutes = Math.floor(elapsed / 60000) % 60;
+      const hours = Math.floor(elapsed / 3600000);
+      timerDisplay.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
-    if (isRunning) {
-      updateTimer();
-    }
+
+
   </script>
 
 </body>
