@@ -141,103 +141,39 @@
 
     const timerDisplay = document.getElementById('timer');
     const controlButton = document.getElementById('controlButton');
-    const toggleTimerButton = document.getElementById('toggleTimerButton');
 
-    function setButtonStyle(button, running) {
-      button.style.color = '#ffffff';
-      button.style.backgroundColor = running ? '#1b386e' : '#6e1b1b';
-    }
-
-    function updateTimer() {
-      const now = Date.now();
-      const elapsed = isRunning ? now - startTime + elapsedTime : elapsedTime;
-      const seconds = Math.floor((elapsed / 1000) % 60);
-      const minutes = Math.floor(elapsed / 60000) % 60;
-      const hours = Math.floor(elapsed / 3600000);
-
-      timerDisplay.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-      if (hours >= 3) {
-        timerDisplay.style.color = 'red';
-      } else if (hours >= 2) {
-        timerDisplay.style.color = 'orange';
-      } else if (hours >= 1) {
-        timerDisplay.style.color = 'green';
-      } else {
-        timerDisplay.style.color = 'black';
-      }
-    }
-
-    // ページロード時に状態復元
     if (isRunning) {
       startTime = Date.now() - elapsedTime;
       timerInterval = setInterval(updateTimer, 1000);
-      controlButton.textContent = '計測リセット';
-      setButtonStyle(controlButton, true);
-    } else {
+      controlButton.textContent = '計測停止';
       updateTimer();
-      setButtonStyle(controlButton, false);
     }
 
-    // 計測開始・リセットのトグル
     controlButton.addEventListener('click', () => {
       if (isRunning) {
-        // タイマーをリセット
-        clearInterval(timerInterval);
-        localStorage.removeItem('startTime');
-        localStorage.removeItem('elapsedTime');
-        localStorage.setItem('isRunning', 'false');
-        elapsedTime = 0;
-        isRunning = false;
-        timerDisplay.textContent = '0:00:00';
-        controlButton.textContent = '計測開始';
-      } else {
-        // 計測開始
-        startTime = Date.now();
-        localStorage.setItem('startTime', startTime);
-        localStorage.setItem('elapsedTime', elapsedTime);
-        localStorage.setItem('isRunning', 'true');
-        timerInterval = setInterval(updateTimer, 1000);
-        isRunning = true;
-        controlButton.textContent = '計測リセット';
-      }
-      setButtonStyle(controlButton, isRunning);
-    });
-
-    // タイマーの停止・再開のトグル
-    toggleTimerButton.addEventListener('click', () => {
-      if (isRunning) {
-        // タイマーを停止
         clearInterval(timerInterval);
         elapsedTime += Date.now() - startTime;
         localStorage.setItem('elapsedTime', elapsedTime);
         localStorage.setItem('isRunning', 'false');
+        controlButton.textContent = '計測開始';
         isRunning = false;
-        toggleTimerButton.textContent = '再開';
       } else {
-        // タイマーを再開
         startTime = Date.now();
         localStorage.setItem('startTime', startTime);
         localStorage.setItem('isRunning', 'true');
         timerInterval = setInterval(updateTimer, 1000);
+        controlButton.textContent = '計測停止';
         isRunning = true;
-        toggleTimerButton.textContent = '停止';
       }
-      setButtonStyle(toggleTimerButton, isRunning);
     });
 
-    // ローカルストレージのクリア
-    function clearLocalStorage() {
-      clearInterval(timerInterval);
-      localStorage.clear();
-      elapsedTime = 0;
-      isRunning = false;
-      timerDisplay.textContent = '0:00:00';
-      document.getElementById('totalHours').innerText = '0 時間 0 分';
-      controlButton.textContent = '計測開始';
-      toggleTimerButton.textContent = '再開';
-      setButtonStyle(controlButton, false);
-      setButtonStyle(toggleTimerButton, false);
+    function updateTimer() {
+      const totalElapsed = isRunning ? Date.now() - startTime + elapsedTime : elapsedTime;
+      const seconds = Math.floor((totalElapsed / 1000) % 60);
+      const minutes = Math.floor(totalElapsed / 60000) % 60;
+      const hours = Math.floor(totalElapsed / 3600000);
+
+      timerDisplay.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
 
