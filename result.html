@@ -114,12 +114,16 @@
       document.getElementById('totalCost').innerText = '0 円';
       document.getElementById('totalHours').innerText = '0 時間 0 分';
       document.getElementById('targetResult').innerText = '3 時間 0 分';
-      document.getElementById('statusMessage').style.display = 'block';
-      setTimeout(() => {
-        document.getElementById('statusMessage').style.display = 'none';
-      }, 2000);
+      const statusMessage = document.getElementById('statusMessage');
+      if (statusMessage) {
+        statusMessage.style.display = 'block';
+        setTimeout(() => {
+          statusMessage.style.display = 'none';
+        }, 2000);
+      }
       window.location.reload();
     }
+
 
 
     // 計測用script
@@ -218,13 +222,6 @@
     if (isRunning) {
       updateTimer();
     }
-
-
-
-
-
-
-
   </script>
 
 </body>
