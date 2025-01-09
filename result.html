@@ -139,6 +139,11 @@
 
     function updateTimer() {
       const now = Date.now();
+
+      if (isRunning) {
+        localStorage.setItem('elapsedTime', elapsed);
+      }
+
       const elapsed = isRunning ? now - startTime + elapsedTime : elapsedTime;
       const seconds = Math.floor((elapsed / 1000) % 60);
       const minutes = Math.floor(elapsed / 60000) % 60;
