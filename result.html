@@ -124,9 +124,9 @@
 
     // 計測用script
 
-    let startTime = 0;
-    let elapsedTime = 0;
-    let isRunning = false;
+    let startTime = localStorage.getItem('startTime') ? parseInt(localStorage.getItem('startTime')) : 0;
+    let elapsedTime = localStorage.getItem('elapsedTime') ? parseInt(localStorage.getItem('elapsedTime')) : 0;
+    let isRunning = localStorage.getItem('isRunning') === 'true';
     let timerInterval = null;
 
     const timerDisplay = document.getElementById('timer');
@@ -137,78 +137,67 @@
       controlButton.style.backgroundColor = isRunning ? '#1b386e' : '#6e1b1b';
     }
 
-    // 初期設定
-    if (localStorage.getItem('isRunning') === 'true') {
-      startTime = parseInt(localStorage.getItem('startTime')) || 0;
-      elapsedTime = parseInt(localStorage.getItem('elapsedTime')) || 0;
-      isRunning = true;
+    function updateTimer() {
+      const now = Date.now();
+      const elapsed = isRunning ? now - startTime + elapsedTime : elapsedTime;
+      const seconds = Math.floor((elapsed / 1000) % 60);
+      const minutes = Math.floor(elapsed / 60000) % 60;
+      const hours = Math.floor(elapsed / 3600000);
+
+      timerDisplay.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      if (hours >= 3) {
+        timerDisplay.style.color = 'red';
+      } else if (hours >= 2) {
+        timerDisplay.style.color = 'orange';
+      } else if (hours >= 1) {
+        timerDisplay.style.color = 'green';
+      } else {
+        timerDisplay.style.color = 'black';
+      }
+    }
+
+    if (isRunning) {
       startTime = Date.now() - elapsedTime;
       timerInterval = setInterval(updateTimer, 1000);
       controlButton.textContent = '仕入れ終了';
       setButtonStyle();
     } else {
-      controlButton.textContent = '仕入れ開始';
+      updateTimer();
+      setButtonStyle();
     }
 
     controlButton.addEventListener('click', () => {
       if (isRunning) {
-        // タイマーを停止しリセット
+        // タイマーを停止
         clearInterval(timerInterval);
-        localStorage.removeItem('startTime');
-        localStorage.removeItem('elapsedTime');
+        elapsedTime += Date.now() - startTime;
+        localStorage.setItem('elapsedTime', elapsedTime);
         localStorage.setItem('isRunning', 'false');
-        timerDisplay.textContent = '0:00:00';
-        controlButton.textContent = '仕入れ開始';
-        toggleButton.textContent = '停止';
-        controlButton.classList.remove('running');  // 動作中のクラスを外す
         isRunning = false;
+        controlButton.textContent = '仕入れ開始';
       } else {
-        // 新しい計測開始
+        // タイマーを再開
         startTime = Date.now();
         localStorage.setItem('startTime', startTime);
         localStorage.setItem('isRunning', 'true');
         timerInterval = setInterval(updateTimer, 1000);
         isRunning = true;
         controlButton.textContent = '仕入れ終了';
-        toggleButton.textContent = '停止';
-        controlButton.classList.add('running');  // 動作中のクラスを追加
-        isRunning = true;
       }
+      setButtonStyle();
     });
 
-
-    // ストップ・再開ボタンの処理
-
-    toggleButton.classList.add('running');
-
-    toggleButton.addEventListener('click', () => {
-      if (isRunning) {
-        clearInterval(timerInterval);
-        elapsedTime = Date.now() - startTime;
-        localStorage.setItem('elapsedTime', elapsedTime);
-        toggleButton.textContent = '再開';
-        toggleButton.classList.remove('running');  // 再開状態クラスを外す
-        isRunning = false;
-        localStorage.setItem('isRunning', 'false');
-      } else {
-        startTime = Date.now() - elapsedTime;
-        localStorage.setItem('startTime', startTime);
-        timerInterval = setInterval(updateTimer, 1000);
-        toggleButton.textContent = '停止';
-        toggleButton.classList.add('running');  // 再開状態クラスを追加
-        isRunning = true;
-        localStorage.setItem('isRunning', 'true');
-      }
-    });
-
-
-    // タイマー更新関数
-    function updateTimer() {
-      const elapsed = Date.now() - startTime;
-      const seconds = Math.floor((elapsed / 1000) % 60);
-      const minutes = Math.floor(elapsed / 60000) % 60;
-      const hours = Math.floor(elapsed / 3600000);
-      timerDisplay.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    function clearLocalStorage() {
+      clearInterval(timerInterval);
+      localStorage.removeItem('startTime');
+      localStorage.removeItem('elapsedTime');
+      localStorage.setItem('isRunning', 'false');
+      elapsedTime = 0;
+      isRunning = false;
+      timerDisplay.textContent = '0:00:00';
+      controlButton.textContent = '仕入れ開始';
+      setButtonStyle();
     }
 
 
