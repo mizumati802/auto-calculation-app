@@ -12,7 +12,7 @@
 <body>
 
   <!-- 仕入額2 (プルダウン) -->
-  
+  <div id="timer">0:00:00</div>
   <div>
     <label for="num4">仕入額:</label>
     <select id="num4" onchange="calculate()">
@@ -95,6 +95,66 @@
   <div>
     <a href="https://mizumati802.github.io/auto-calculation-app/result.html" class="result-link">記録へ</a>
   </div>
+  <br>
+  <button id="controlButton" class="control_Button">計測開始</button>
+
+  <!-- 計測script -->
+
+  <script>
+    let startTime = localStorage.getItem('startTime') ? parseInt(localStorage.getItem('startTime')) : 0;
+    let isRunning = localStorage.getItem('isRunning') === 'true';
+    let timerInterval = null;
+
+    const timerDisplay = document.getElementById('timer');
+    const controlButton = document.getElementById('controlButton');
+
+    if (isRunning) {
+      timerInterval = setInterval(updateTimer, 1000);
+      controlButton.textContent = '計測停止';
+    }
+
+    controlButton.addEventListener('click', () => {
+      if (isRunning) {
+        clearInterval(timerInterval);
+        localStorage.removeItem('startTime');
+        localStorage.setItem('isRunning', 'false');
+        controlButton.textContent = '計測開始';
+        isRunning = false;
+      } else {
+        startTime = Date.now();
+        localStorage.setItem('startTime', startTime);
+        localStorage.setItem('isRunning', 'true');
+        timerInterval = setInterval(updateTimer, 1000);
+        controlButton.textContent = '計測停止';
+        isRunning = true;
+      }
+    });
+
+    function updateTimer() {
+      const elapsedTime = Date.now() - startTime;
+      const seconds = Math.floor((elapsedTime / 1000) % 60);
+      const minutes = Math.floor(elapsedTime / 60000) % 60;
+      const hours = Math.floor(elapsedTime / 3600000);
+
+      timerDisplay.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      if (hours >= 3) {
+        timerDisplay.style.color = 'red';
+      } else if (hours >= 2) {
+        timerDisplay.style.color = 'orange';
+      } else if (hours >= 1) {
+        timerDisplay.style.color = 'green';
+      } else {
+        timerDisplay.style.color = 'black';
+      }
+    }
+
+    if (isRunning) {
+      updateTimer();
+    }
+  </script>
+
+
 </body>
 
 
