@@ -51,170 +51,81 @@
 
 
   <script>
-    // ページ読み込み時にローカルストレージから結果を取得して表示
-    window.onload = function () {
-      const results = JSON.parse(localStorage.getItem('results')) || [];
-      const resultsList = document.getElementById('resultsList');
-      let totalHours = 0;
-      let totalMinutes = 0;
-      let totalCost = 0;
-
-      // 結果をリスト表示
-      results.forEach((result) => {
-        const li = document.createElement('li');
-        li.innerHTML = `${result.result} 円, ${result.timeResult}`;
-        resultsList.appendChild(li);
-
-        const timeParts = result.timeResult.match(/(\d+)\s*時間\s*(\d+)\s*分/);
-        if (timeParts) {
-          const hours = parseInt(timeParts[1]);
-          const minutes = parseInt(timeParts[2]);
-          totalHours += hours;
-          totalMinutes += minutes;
-        }
-
-        // 仕入れ金額を直接加算
-        totalCost += result.result;
-      });
-
-      // 合計金額の表示
-      document.getElementById('totalCost').innerText = totalCost + " 円";
-
-      // 合計時間を「時間」と「分」に変換
-      const totalTimeInHours = totalHours + Math.floor(totalMinutes / 60);
-      const remainingMinutes = totalMinutes % 60;
-      document.getElementById('totalHours').innerText = `${totalTimeInHours} 時間 ${remainingMinutes} 分`;
-
-      // ノルマ計算: 3時間から合計時間を引く
-      const targetTime = 3 * 60;  // 3時間 = 180分
-      const totalTimeInMinutes = totalTimeInHours * 60 + remainingMinutes;
-      const remainingTime = targetTime - totalTimeInMinutes;
-
-      const targetResult = document.getElementById('targetResult');
-      const targetTimeHours = Math.floor(remainingTime / 60);
-      const targetTimeMinutes = remainingTime % 60;
-
-      if (remainingTime < 0) {
-        targetResult.innerText = "終了";
-        targetResult.style.color = "red";
-      } else if (targetTimeHours === 0) {
-        targetResult.innerText = `${targetTimeMinutes} 分`;
-      } else {
-        targetResult.innerText = `${targetTimeHours} 時間 ${targetTimeMinutes} 分`;
-      }
-    };
-
-    // ローカルストレージをクリアする関数
-    function clearLocalStorage() {
-      localStorage.removeItem('results');
-      const resultsList = document.getElementById('resultsList');
-      if (resultsList) {
-        resultsList.innerHTML = '';  // 結果リストを空にする
-      }
-      document.getElementById('totalCost').innerText = '0 円';
-      document.getElementById('totalHours').innerText = '0 時間 0 分';
-      document.getElementById('targetResult').innerText = '3 時間 0 分';
-      document.getElementById('statusMessage').style.display = 'block';
-      setTimeout(() => {
-        document.getElementById('statusMessage').style.display = 'none';
-      }, 2000);
-      window.location.reload();
-    }
-
-
-    // 計測用script
-
-    let startTime = 0;
-    let elapsedTime = 0;
-    let isRunning = false;
+    let startTime = localStorage.getItem('startTime') ? parseInt(localStorage.getItem('startTime')) : 0;
+    let elapsedTime = localStorage.getItem('elapsedTime') ? parseInt(localStorage.getItem('elapsedTime')) : 0;
+    let isRunning = localStorage.getItem('isRunning') === 'true';
     let timerInterval = null;
 
     const timerDisplay = document.getElementById('timer');
     const controlButton = document.getElementById('controlButton');
-    const toggleButton = document.getElementById('toggleTimerButton');
 
     function setButtonStyle() {
       controlButton.style.color = '#ffffff';
       controlButton.style.backgroundColor = isRunning ? '#1b386e' : '#6e1b1b';
     }
 
-    // 初期設定
-    if (localStorage.getItem('isRunning') === 'true') {
-      startTime = parseInt(localStorage.getItem('startTime')) || 0;
-      elapsedTime = parseInt(localStorage.getItem('elapsedTime')) || 0;
-      isRunning = true;
-      startTime = Date.now() - elapsedTime;
-      timerInterval = setInterval(updateTimer, 1000);
-      controlButton.textContent = '仕入れ終了';
-    } else {
-      controlButton.textContent = '仕入れ開始';
-    }
-
-    // 仕入れ開始・終了ボタンの動作
-    controlButton.addEventListener('click', () => {
-      if (isRunning) {
-        // タイマーを停止しリセット
-        clearInterval(timerInterval);
-        localStorage.removeItem('startTime');
-        localStorage.removeItem('elapsedTime');
-        localStorage.setItem('isRunning', 'false');
-        timerDisplay.textContent = '0:00:00';
-        controlButton.textContent = '仕入れ開始';
-        toggleButton.textContent = '停止';
-        controlButton.classList.remove('running');  // 動作中のクラスを外す
-        isRunning = false;
-      } else {
-        // 新しい計測開始
-        startTime = Date.now();
-        elapsedTime = 0;
-        localStorage.setItem('startTime', startTime);
-        localStorage.setItem('elapsedTime', elapsedTime);
-        localStorage.setItem('isRunning', 'true');
-        timerInterval = setInterval(updateTimer, 1000);
-        controlButton.textContent = '仕入れ終了';
-        toggleButton.textContent = '停止';
-        controlButton.classList.add('running');  // 動作中のクラスを追加
-        isRunning = true;
-      }
-    });
-
-
-    // ストップ・再開ボタンの処理
-
-    toggleButton.classList.add('running');
-
-    toggleButton.addEventListener('click', () => {
-      if (isRunning) {
-        clearInterval(timerInterval);
-        elapsedTime = Date.now() - startTime;
-        localStorage.setItem('elapsedTime', elapsedTime);
-        toggleButton.textContent = '再開';
-        toggleButton.classList.remove('running');  // 再開状態クラスを外す
-        isRunning = false;
-        localStorage.setItem('isRunning', 'false');
-      } else {
-        startTime = Date.now() - elapsedTime;
-        localStorage.setItem('startTime', startTime);
-        timerInterval = setInterval(updateTimer, 1000);
-        toggleButton.textContent = '停止';
-        toggleButton.classList.add('running');  // 再開状態クラスを追加
-        isRunning = true;
-        localStorage.setItem('isRunning', 'true');
-      }
-    });
-
-
-    // タイマー更新関数
     function updateTimer() {
-      const elapsed = Date.now() - startTime;
+      const now = Date.now();
+      const elapsed = isRunning ? now - startTime + elapsedTime : elapsedTime;
       const seconds = Math.floor((elapsed / 1000) % 60);
       const minutes = Math.floor(elapsed / 60000) % 60;
       const hours = Math.floor(elapsed / 3600000);
+
       timerDisplay.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      if (hours >= 3) {
+        timerDisplay.style.color = 'red';
+      } else if (hours >= 2) {
+        timerDisplay.style.color = 'orange';
+      } else if (hours >= 1) {
+        timerDisplay.style.color = 'green';
+      } else {
+        timerDisplay.style.color = 'black';
+      }
     }
 
+    if (isRunning) {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(updateTimer, 1000);
+      controlButton.textContent = '仕入れ終了';
+      setButtonStyle();
+    } else {
+      updateTimer();
+      setButtonStyle();
+    }
 
+    controlButton.addEventListener('click', () => {
+      if (isRunning) {
+        // タイマーを停止
+        clearInterval(timerInterval);
+        elapsedTime += Date.now() - startTime;
+        localStorage.setItem('elapsedTime', elapsedTime);
+        localStorage.setItem('isRunning', 'false');
+        isRunning = false;
+        controlButton.textContent = '仕入れ開始';
+      } else {
+        // タイマーを再開
+        startTime = Date.now();
+        localStorage.setItem('startTime', startTime);
+        localStorage.setItem('isRunning', 'true');
+        timerInterval = setInterval(updateTimer, 1000);
+        isRunning = true;
+        controlButton.textContent = '仕入れ終了';
+      }
+      setButtonStyle();
+    });
 
+    function clearLocalStorage() {
+      clearInterval(timerInterval);
+      localStorage.removeItem('startTime');
+      localStorage.removeItem('elapsedTime');
+      localStorage.setItem('isRunning', 'false');
+      elapsedTime = 0;
+      isRunning = false;
+      timerDisplay.textContent = '0:00:00';
+      controlButton.textContent = '仕入れ開始';
+      setButtonStyle();
+    }
   </script>
 
 </body>
