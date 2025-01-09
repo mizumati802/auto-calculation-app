@@ -63,28 +63,6 @@ div {
   font-size: 18pt;
 }
 
-/* メイン操作ボタン */
-.control_Button {
-  display: block;
-  padding: 10px 20px;
-  font-size: 18pt;
-  cursor: pointer;
-  background-color: #6e1b1b;
-  /* デフォルトでダークレッド */
-  color: white;
-  /* デフォルトで白文字 */
-  border: none;
-  text-align: center;
-  margin-top: 20px;
-}
-
-/* 仕入れ終了状態（ボタンが動作中）のスタイル */
-.control_Button.running {
-  background-color: #1b386e;
-  /* 動作中はネイビーブルー */
-  color: white;
-}
-
 
 /* クリアボタン */
 .clear_button {
@@ -99,7 +77,8 @@ div {
   font-size: 18pt;
 }
 
-#toggleTimerButton {
+/* idがtoggleTimerButton、classがcontrol_Buttonの場合 */
+#toggleTimerButton.control_Button {
   display: block;
   padding: 10px 20px;
   font-size: 18pt;
@@ -112,11 +91,34 @@ div {
   margin-top: 60px;
 }
 
-/* ストップ状態のスタイル */
-#toggleTimerButton.running {
+/* idがtoggleTimerButton、classがcontrol_Button runningの場合 */
+#toggleTimerButton.control_Button.running {
   background-color: #7a49a5;
-  /* ストップ状態の色 */
+  /* 稼働中（ストップ状態）の色 */
 }
+
+
+
+/* idがcontrolButton、classがcontrol_Buttonの場合 */
+#controlButton.control_Button {
+  display: block;
+  padding: 10px 20px;
+  font-size: 18pt;
+  cursor: pointer;
+  background-color: #110594;
+  /* 初期状態（再開）の色 */
+  color: white;
+  border: none;
+  text-align: center;
+  margin-top: 60px;
+}
+
+/* idがcontrolButton、classがcontrol_Button runningの場合 */
+#controlButton.control_Button.running {
+  background-color: #cd3232;
+  /* 稼働中の色 */
+}
+
 
 
 

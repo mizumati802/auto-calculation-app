@@ -50,16 +50,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
   <script>
     // ページ読み込み時にローカルストレージから結果を取得して表示
     window.onload = function () {
@@ -135,47 +125,33 @@
     // 計測用script
 
     let startTime = localStorage.getItem('startTime') ? parseInt(localStorage.getItem('startTime')) : 0;
-    let isRunning = localStorage.getItem('isRunning') === 'true';
+    let isRunning = localStorage.getItem('isRunning') === 'true' || false;
+    let timerPausedTime = localStorage.getItem('timerPausedTime') ? parseInt(localStorage.getItem('timerPausedTime')) : 0;
     let timerInterval = null;
 
     const timerDisplay = document.getElementById('timer');
     const controlButton = document.getElementById('controlButton');
+    const toggleTimerButton = document.getElementById('toggleTimerButton');
 
-    function setButtonStyle() {
-      controlButton.style.color = '#ffffff';
+    function setControlButtonStyle() {
       if (isRunning) {
-        controlButton.style.backgroundColor = '#1b386e';
-      } else {
-        controlButton.style.backgroundColor = '#6e1b1b';
-      }
-    }
-
-    if (isRunning) {
-      timerInterval = setInterval(updateTimer, 1000);
-      controlButton.textContent = '仕入れ終了';
-      setButtonStyle();
-    } else {
-      controlButton.style.backgroundColor = '#6e1b1b';
-      controlButton.style.color = '#ffffff';
-    }
-
-    controlButton.addEventListener('click', () => {
-      if (isRunning) {
-        clearInterval(timerInterval);
-        localStorage.removeItem('startTime');
-        localStorage.setItem('isRunning', 'false');
-        controlButton.textContent = '仕入れ開始';
-        isRunning = false;
-      } else {
-        startTime = Date.now();
-        localStorage.setItem('startTime', startTime);
-        localStorage.setItem('isRunning', 'true');
-        timerInterval = setInterval(updateTimer, 1000);
+        controlButton.classList.add('running');
         controlButton.textContent = '仕入れ終了';
-        isRunning = true;
+      } else {
+        controlButton.classList.remove('running');
+        controlButton.textContent = '仕入れ開始';
       }
-      setButtonStyle();
-    });
+    }
+
+    function setToggleTimerButtonStyle() {
+      if (isRunning) {
+        toggleTimerButton.classList.add('running');
+        toggleTimerButton.textContent = '停止';
+      } else {
+        toggleTimerButton.classList.remove('running');
+        toggleTimerButton.textContent = '再開';
+      }
+    }
 
     function updateTimer() {
       const elapsedTime = Date.now() - startTime;
@@ -196,9 +172,56 @@
       }
     }
 
+    // 初期状態の設定
+    if (isRunning) {
+      timerInterval = setInterval(updateTimer, 1000);
+      updateTimer(); // 初回のタイマー更新
+    }
+    setControlButtonStyle();
+    setToggleTimerButtonStyle();
+
+    controlButton.addEventListener('click', () => {
+      if (isRunning) {
+        clearInterval(timerInterval);
+        localStorage.removeItem('startTime');
+        localStorage.setItem('isRunning', 'false');
+        isRunning = false;
+      } else {
+        startTime = Date.now();
+        localStorage.setItem('startTime', startTime);
+        localStorage.setItem('isRunning', 'true');
+        timerInterval = setInterval(updateTimer, 1000);
+        isRunning = true;
+      }
+      setControlButtonStyle();
+    });
+
+    toggleTimerButton.addEventListener('click', () => {
+      if (isRunning) {
+        clearInterval(timerInterval);
+        timerPausedTime = Date.now();
+        localStorage.setItem('timerPausedTime', timerPausedTime);
+        localStorage.setItem('isRunning', 'false');
+        isRunning = false;
+      } else {
+        startTime += Date.now() - timerPausedTime;
+        localStorage.setItem('startTime', startTime);
+        localStorage.removeItem('timerPausedTime');
+        timerPausedTime = 0;
+        localStorage.setItem('isRunning', 'true');
+        timerInterval = setInterval(updateTimer, 1000);
+        isRunning = true;
+      }
+      setToggleTimerButtonStyle();
+    });
+
     if (isRunning) {
       updateTimer();
     }
+
+
+
+
 
 
 
