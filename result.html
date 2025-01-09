@@ -47,18 +47,8 @@
     </div>
   </div>
   <!-- 戻るリンク -->
-
-
-
-
-
-
-
-
-
-
-
-
+  <br>
+  <button id="controlButton" class="control_Button">仕入れ開始</button>
 
   <script>
     // ページ読み込み時にローカルストレージから結果を取得して表示
@@ -135,45 +125,69 @@
     // 計測用script
 
     let startTime = localStorage.getItem('startTime') ? parseInt(localStorage.getItem('startTime')) : 0;
-    let elapsedTime = localStorage.getItem('elapsedTime') ? parseInt(localStorage.getItem('elapsedTime')) : 0;
     let isRunning = localStorage.getItem('isRunning') === 'true';
     let timerInterval = null;
 
     const timerDisplay = document.getElementById('timer');
     const controlButton = document.getElementById('controlButton');
 
+    function setButtonStyle() {
+      controlButton.style.color = '#ffffff';
+      if (isRunning) {
+        controlButton.style.backgroundColor = '#1b386e';
+      } else {
+        controlButton.style.backgroundColor = '#6e1b1b';
+      }
+    }
+
     if (isRunning) {
-      startTime = Date.now() - elapsedTime;
       timerInterval = setInterval(updateTimer, 1000);
-      controlButton.textContent = '計測停止';
-      updateTimer();
+      controlButton.textContent = '仕入れ終了';
+      setButtonStyle();
+    } else {
+      controlButton.style.backgroundColor = '#6e1b1b';
+      controlButton.style.color = '#ffffff';
     }
 
     controlButton.addEventListener('click', () => {
       if (isRunning) {
         clearInterval(timerInterval);
-        elapsedTime += Date.now() - startTime;
-        localStorage.setItem('elapsedTime', elapsedTime);
+        localStorage.removeItem('startTime');
         localStorage.setItem('isRunning', 'false');
-        controlButton.textContent = '計測開始';
+        controlButton.textContent = '仕入れ開始';
         isRunning = false;
       } else {
         startTime = Date.now();
         localStorage.setItem('startTime', startTime);
         localStorage.setItem('isRunning', 'true');
         timerInterval = setInterval(updateTimer, 1000);
-        controlButton.textContent = '計測停止';
+        controlButton.textContent = '仕入れ終了';
         isRunning = true;
       }
+      setButtonStyle();
     });
 
     function updateTimer() {
-      const totalElapsed = isRunning ? Date.now() - startTime + elapsedTime : elapsedTime;
-      const seconds = Math.floor((totalElapsed / 1000) % 60);
-      const minutes = Math.floor(totalElapsed / 60000) % 60;
-      const hours = Math.floor(totalElapsed / 3600000);
+      const elapsedTime = Date.now() - startTime;
+      const seconds = Math.floor((elapsedTime / 1000) % 60);
+      const minutes = Math.floor(elapsedTime / 60000) % 60;
+      const hours = Math.floor(elapsedTime / 3600000);
 
       timerDisplay.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      if (hours >= 3) {
+        timerDisplay.style.color = 'red';
+      } else if (hours >= 2) {
+        timerDisplay.style.color = 'orange';
+      } else if (hours >= 1) {
+        timerDisplay.style.color = 'green';
+      } else {
+        timerDisplay.style.color = 'black';
+      }
+    }
+
+    if (isRunning) {
+      updateTimer();
     }
 
 
