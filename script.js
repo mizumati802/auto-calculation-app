@@ -12,13 +12,17 @@ function calculate() {
   const num4 = parseFloat(document.getElementById('num4').value) || 0;  // 仕入額
   const num3 = parseFloat(document.getElementById('num3').value) || 4000;  // 見込み利益
   const percentage = parseFloat(document.getElementById('percentage').value) || 0;  // セールのパーセンテージ
-  const status = parseFloat(document.getElementById('status').value) || 300; // 状態・手間賃の値（デフォルト：ポスト(-300)）
+  const status = parseFloat(document.getElementById('status').value) || 0; // 状態・手間賃
+  const num1 = parseFloat(document.getElementById('num1').value) || 0; // 発送費用
 
   // 状態分を見込み利益から直接引く
   const adjustedProfit = num3 - status;
 
+  // 発送費用を引く
+  const afterShippingCost = adjustedProfit - num1;
+
   // さらに10%を引く前に500を引く
-  const reducedProfit = adjustedProfit - 500;
+  const reducedProfit = afterShippingCost - 500;
 
   // さらに10%を差し引く
   const finalAdjustedProfit = reducedProfit * 0.9;
@@ -42,7 +46,6 @@ function calculate() {
   // 時間と分を表示
   document.getElementById('timeResult').innerText = calculatedTimeResult;
 }
-
 
 // ローカルストレージに計算結果を保存する処理
 function saveToLocalStorage() {

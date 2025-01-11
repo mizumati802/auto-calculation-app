@@ -78,6 +78,15 @@
     </select>
   </div>
 
+  <!-- 発送方法 (ドロップダウン) -->
+  <div>
+    <label for="num1">発送:</label>
+    <select id="num1" onchange="calculate()">
+      <option value="500">コンビニ発送(500)</option>
+      <option value="300" selected>ポスト投函(300)</option> <!-- デフォルトをポスト投函に設定 -->
+    </select>
+  </div>
+
   <!-- 計算結果表示 -->
   <div class="result">
     <span id="result">0</span> 円
